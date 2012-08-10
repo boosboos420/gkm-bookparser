@@ -14,6 +14,7 @@ class Shloka {
 	public String sanskrit_verse ;
 	public String english_verse ;
 	public String commentary;
+	public String word_meanings ;
 	
 	String content ;
 	int startOfCommentary = 0 ;
@@ -24,6 +25,7 @@ class Shloka {
 		english_verse = "" ;
 		commentary = thecontent ;
 		content = thecontent ;
+		word_meanings = "" ;
 		
 		System.out.println("added " + title) ;
 		
@@ -78,10 +80,23 @@ class Shloka {
 	}
 	
 	void extractCommentary() {
+				
+		Pattern p = Pattern.compile("([A-Za-z- ]+:[A-Za-z- /]+)<br[ ]*/>") ;
+		Matcher m = p.matcher(content) ;
+		
+		while (m.find()) {
+			word_meanings = word_meanings + m.group(1) + "\n" ;
+			//System.out.println(">>" + word_meanings + "<<") ;
+			//System.out.println(m.start() + " " + m.end());
+		}
+
 		String rawCommentary = content.substring(startOfCommentary, content.length()) ;
+
 		rawCommentary = rawCommentary.replaceAll("<br[ ]*/>", " ") ;
+
 		rawCommentary = rawCommentary.replaceAll("[&]nbsp;", " ") ;
 		System.out.println(rawCommentary) ;
+
 	}
 }
 
@@ -107,6 +122,9 @@ class XMLParser {
 			  writer.write("\n") ;
 			  writer.write(shlokas.get(i).english_verse) ;
 			  writer.write("\n") ;
+			  writer.write(shlokas.get(i).word_meanings) ;
+			  writer.write("\n") ;
+
 		  }
 		  
 		  writer.close() ;
@@ -134,7 +152,7 @@ class XMLParser {
 			      
 			      String title = getTagValue("title", eElement);
 			      
-			      if (title.contains("hapter")) {
+			      if (title.contains("hapter") && !title.contains("ummary")) {
 			    	  
 			    	  String content = getTagValue("content", eElement);
 			    	  //String transformed_content = transformContent(content) ;
@@ -175,7 +193,7 @@ class LatexTransform {
 		
 		while (m.find()) {
 			//System.out.println(m.find()) ;
-			System.out.println(m.start() + " " + m.end() + " " + m.group());
+			//System.out.println(m.start() + " " + m.end() + " " + m.group());
 		}
 		
 				//doMain() ;
