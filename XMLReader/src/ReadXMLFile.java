@@ -35,7 +35,7 @@ class Shloka {
 	}
 	
 	void extractSanskritVerse() {
-		Pattern p = Pattern.compile("<i>(.*[|][|][ ]*[0-9]+[ ]*[|][|])") ;
+		Pattern p = Pattern.compile("<i>([a-z ]+[|])") ;
 		Matcher m = p.matcher(content) ;
 		
 		String htmlVerse = "" ;
@@ -45,6 +45,16 @@ class Shloka {
 			//System.out.println(">>" + m.group(1) + "<<") ;
 			//System.out.println(m.start() + " " + m.end() + " " + m.group());
 		}
+		
+		p = Pattern.compile("([a-z ]+[|][|][ ]*[0-9]+[ ]*[|][|])") ;
+		m = p.matcher(content) ;
+		
+		if (m.find()) {
+			htmlVerse += m.group(1) ;
+			//System.out.println(">>" + m.group(1) + "<<") ;
+			//System.out.println(m.start() + " " + m.end() + " " + m.group());
+		}
+		
 		
 		htmlVerse = htmlVerse.replaceAll("<i>", "") ;
 		htmlVerse = htmlVerse.replaceAll("</i>", "") ;
@@ -70,7 +80,8 @@ class Shloka {
 		
 		htmlVerse = htmlVerse.replaceAll("<b>", "") ;
 		htmlVerse = htmlVerse.replaceAll("</b>", "") ;
-		htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", " ") ;
+		htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", "") ;
+		htmlVerse = htmlVerse.replaceAll("[&]nbsp;", "") ;
 		
 		//System.out.println(htmlVerse) ;
 		
@@ -175,7 +186,11 @@ class XMLParser {
 			   }
 			}
 			
-			writeFile(outFileName) ;
+			//writeFile(outFileName) ;
+			
+			//Collections.reverse(shlokas) ;
+			
+			LatexTransform.writeLatexFile(shlokas, outFileName) ;
 			
 			return shlokas ;
 	}
@@ -206,35 +221,61 @@ class LatexTransform {
 				//doMain() ;
 	}
 	
-	 
-	static String html2latexContent(String str) {
-	
-		String result = str.replaceAll("[<]i[>]", "\\\\textit{") ;
-		result = result.replaceAll("[<]/i[>]", "}") ;
-		
-		result = result.replaceAll("<b>", "\\\\textbf{") ;
-		result = result.replaceAll("</b>", "}") ;
-		
-		result = result.replaceAll("[&]nbsp[;]", " ") ;		
-		
-		result = result.replaceAll("[%]", "pct") ;		
-		
-		result = result.replaceAll("<br />", "~\\\\\\\\"+"\n") ;
-		
-		result = result.replaceAll("[&]gt[;]", ">") ;
-		return result ;
-		
-		
-	}
-	
+
 	static String html2latexTitle(String str) {
 		
-		String result = "\\section{" + str + "}" +"\n"; 
+		String result = "\\section{" + str + "}" ; 
 		return result ;
-		
 		
 	}
 	
+	static String html2latexSanskrit(String str) {
+		
+		String result = "\\textit{" + str + "}" ; 
+		return result ;
+		
+	}
+
+	static String html2latexEnglish(String str) {
+		
+		String result = "\\textbf{" + str + "}" ; 
+		return result ;
+		
+	}
+
+
+	static String html2latexCommentary(String str) {
+		
+		String result = str.replaceAll("\n\n", "\n") ;
+		result = result.replaceAll("\n", "\n~\\\\\\\\") ; 
+		result = result.replaceAll("&gt;", ">") ;
+		result = result.replaceAll("&rsquo;", "'") ;
+		result = result.replaceAll("“", "\"") ;
+		result = result.replaceAll("”", "\"") ;
+		return result ;
+		
+	}
+
+	static String finalLatex(Shloka s) {
+		String finaltext = "" ;
+		
+		finaltext +=  html2latexTitle(s.title) + "\n" ;
+		finaltext +=  html2latexSanskrit(s.sanskrit_verse) +  "\n";
+		finaltext +=  html2latexEnglish(s.english_verse) + "\n";
+		finaltext +=  html2latexCommentary(s.commentary) ;				
+		return finaltext ;
+	}
+	
+	static void writeLatexFile(List <Shloka> shlokas, String path) throws Exception {
+		  BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
+		  
+		  for (int i = shlokas.size()-1 ; i >= 0; --i) {
+			  writer.write(finalLatex(shlokas.get(i))) ;
+		  }
+		  
+		  writer.close() ;
+	  }
+
 	
 }
 
