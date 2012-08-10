@@ -80,22 +80,27 @@ class Shloka {
 	}
 	
 	void extractCommentary() {
-				
+		
+		int endOfMeanings = 0 ;
+		
 		Pattern p = Pattern.compile("([A-Za-z- ]+:[A-Za-z- /]+)<br[ ]*/>") ;
 		Matcher m = p.matcher(content) ;
 		
 		while (m.find()) {
 			word_meanings = word_meanings + m.group(1) + "\n" ;
+			endOfMeanings = m.end() ;
 			//System.out.println(">>" + word_meanings + "<<") ;
 			//System.out.println(m.start() + " " + m.end());
 		}
 
-		String rawCommentary = content.substring(startOfCommentary, content.length()) ;
+		String rawCommentary = content.substring(endOfMeanings, content.length()).trim() ;
 
-		rawCommentary = rawCommentary.replaceAll("<br[ ]*/>", " ") ;
-
-		rawCommentary = rawCommentary.replaceAll("[&]nbsp;", " ") ;
-		System.out.println(rawCommentary) ;
+		rawCommentary = rawCommentary.replaceAll("<br[ ]*/>", "\n") ;
+		rawCommentary = rawCommentary.replaceAll("[&]nbsp;", "") ;
+		
+		//System.out.println(rawCommentary) ;
+		
+		commentary = rawCommentary.trim() ;
 
 	}
 }
@@ -123,6 +128,8 @@ class XMLParser {
 			  writer.write(shlokas.get(i).english_verse) ;
 			  writer.write("\n") ;
 			  writer.write(shlokas.get(i).word_meanings) ;
+			  writer.write("\n") ;
+			  writer.write(shlokas.get(i).commentary) ;
 			  writer.write("\n") ;
 
 		  }
