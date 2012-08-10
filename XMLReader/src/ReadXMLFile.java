@@ -14,7 +14,9 @@ class Shloka {
 	public String sanskrit_verse ;
 	public String english_verse ;
 	public String commentary;
+	
 	String content ;
+	int startOfCommentary = 0 ;
 	
 	Shloka(String thetitle, String thecontent) {
 		title = thetitle ;
@@ -23,8 +25,11 @@ class Shloka {
 		commentary = thecontent ;
 		content = thecontent ;
 		
+		System.out.println("added " + title) ;
+		
 		extractSanskritVerse() ;
 		extractEnglishVerse() ;
+		extractCommentary() ;
 	}
 	
 	void extractSanskritVerse() {
@@ -43,7 +48,7 @@ class Shloka {
 		htmlVerse = htmlVerse.replaceAll("</i>", "") ;
 		htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", " ") ;
 		
-		System.out.println(htmlVerse) ;
+		//System.out.println(htmlVerse) ;
 		
 		sanskrit_verse = htmlVerse ;
 	}
@@ -55,6 +60,7 @@ class Shloka {
 		String htmlVerse = "" ;
 		
 		if (m.find()) {
+			startOfCommentary = m.end() ;
 			htmlVerse = m.group(1) ;
 			//System.out.println(">>" + m.group(1) + "<<") ;
 			//System.out.println(m.start() + " " + m.end() + " " + m.group());
@@ -62,11 +68,20 @@ class Shloka {
 		
 		htmlVerse = htmlVerse.replaceAll("<b>", "") ;
 		htmlVerse = htmlVerse.replaceAll("</b>", "") ;
-				htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", " ") ;
+		htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", " ") ;
 		
-		System.out.println(htmlVerse) ;
+		//System.out.println(htmlVerse) ;
+		
+		
 		
 		english_verse = htmlVerse ;
+	}
+	
+	void extractCommentary() {
+		String rawCommentary = content.substring(startOfCommentary, content.length()) ;
+		rawCommentary = rawCommentary.replaceAll("<br[ ]*/>", " ") ;
+		rawCommentary = rawCommentary.replaceAll("[&]nbsp;", " ") ;
+		System.out.println(rawCommentary) ;
 	}
 }
 
@@ -87,7 +102,11 @@ class XMLParser {
 		  
 		  for (int i = 0; i < shlokas.size(); ++i) {
 			  writer.write(shlokas.get(i).title) ;
-			  writer.write(shlokas.get(i).commentary) ;
+			  writer.write("\n") ;
+			  writer.write(shlokas.get(i).sanskrit_verse) ;
+			  writer.write("\n") ;
+			  writer.write(shlokas.get(i).english_verse) ;
+			  writer.write("\n") ;
 		  }
 		  
 		  writer.close() ;
@@ -96,7 +115,7 @@ class XMLParser {
 	
 	static List<Shloka> doParse(String inFileName, String outFileName) throws Exception {
 		  
-		 	File fXmlFile = new File("c:\\users\\gmarballi\\downloads\\blog-07-25-2012.xml");
+		 	File fXmlFile = new File(inFileName);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);
@@ -115,13 +134,13 @@ class XMLParser {
 			      
 			      String title = getTagValue("title", eElement);
 			      
-			      if (title.contains("hapter 2")) {
+			      if (title.contains("hapter")) {
 			    	  
 			    	  String content = getTagValue("content", eElement);
 			    	  //String transformed_content = transformContent(content) ;
 			    	  //String transformed_title = transformTitle(title) ;
-			    	  System.out.println("Title : " + getTagValue("title", eElement));
-			    	  System.out.println("Content : " + content);
+			    	  //System.out.println("Title : " + getTagValue("title", eElement));
+			    	  //System.out.println("Content : " + content);
 		              //System.out.println("Nick Name : " + getTagValue("nickname", eElement));
 			      //System.out.println("Salary : " + getTagValue("salary", eElement));
 			    	  
