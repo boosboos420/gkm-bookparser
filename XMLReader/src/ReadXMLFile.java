@@ -50,7 +50,7 @@ class Shloka {
 		m = p.matcher(content) ;
 		
 		if (m.find()) {
-			htmlVerse += m.group(1) ;
+			htmlVerse = htmlVerse +  "\\\\\\" + "noindent \n" + m.group(1) ;
 			//System.out.println(">>" + m.group(1) + "<<") ;
 			//System.out.println(m.start() + " " + m.end() + " " + m.group());
 		}
@@ -200,26 +200,6 @@ class XMLParser {
 class LatexTransform {
 	
 	
-	static String longtxt = "" +
-			" foo : asdasdas " +
-			" asdfasf : sdwrwefgvx " +
-			" bnmbnmnbmn : qwtyeryqtwerqyter " ;
-			
-	static void trialtransformer() {
-		
-		System.out.println(longtxt) ;
-		
-		Pattern p = Pattern.compile("[a-z]+[ ]*:[ ]*[a-z]+") ;
-		Matcher m = p.matcher(longtxt) ;
-		
-		
-		while (m.find()) {
-			//System.out.println(m.find()) ;
-			//System.out.println(m.start() + " " + m.end() + " " + m.group());
-		}
-		
-				//doMain() ;
-	}
 	
 
 	static String html2latexTitle(String str) {
@@ -237,11 +217,18 @@ class LatexTransform {
 	}
 
 	static String html2latexEnglish(String str) {
-		
-		String result = "\\textbf{" + str + "}" ; 
+		String result = "\\" + "noindent" + "\\textbf{" + str + "}" ; 
 		return result ;
 		
 	}
+	
+	static String html2latexWordMeaning(String str) {
+		str = str.replaceAll("\n", "~\\\\\\\\\n") ;
+		String result = "\\marginnote{" + str + "}" ; 
+		return result ;
+		
+	}
+
 
 
 	static String html2latexCommentary(String str) {
@@ -252,16 +239,18 @@ class LatexTransform {
 		result = result.replaceAll("&rsquo;", "'") ;
 		result = result.replaceAll("“", "\"") ;
 		result = result.replaceAll("”", "\"") ;
+		result = result.replaceAll("%", " pct") ;
 		return result ;
 		
 	}
 
 	static String finalLatex(Shloka s) {
-		String finaltext = "" ;
+		String finaltext = "\n" ;
 		
 		finaltext +=  html2latexTitle(s.title) + "\n" ;
-		finaltext +=  html2latexSanskrit(s.sanskrit_verse) +  "\n";
-		finaltext +=  html2latexEnglish(s.english_verse) + "\n";
+		finaltext +=  html2latexSanskrit(s.sanskrit_verse) +  "\\\\~\\\\\n";
+		finaltext +=  html2latexEnglish(s.english_verse) + "\\\\\n";
+		finaltext +=  html2latexWordMeaning(s.word_meanings) + "\n\\" + "bigskip \n";
 		finaltext +=  html2latexCommentary(s.commentary) ;				
 		return finaltext ;
 	}
@@ -287,7 +276,7 @@ public class ReadXMLFile {
 		
 		try {
 		//doMain() ;
-		XMLParser.doParse("c:\\users\\gmarballi\\downloads\\blog-07-25-2012.xml", "c:/users/gmarballi/downloads/gita-out.txt") ;
+		XMLParser.doParse("c:\\users\\gkm\\downloads\\blog-07-25-2012.xml", "c:/users/gkm/downloads/gita-out.txt") ;
 		  
 		
 		} catch (Exception e) {
