@@ -15,6 +15,8 @@ class Shloka {
 	public String english_verse ;
 	public String commentary;
 	public String word_meanings ;
+	public String footnotes ;
+	public String ending ;
 	
 	String content ;
 	int startOfCommentary = 0 ;
@@ -26,12 +28,16 @@ class Shloka {
 		commentary = thecontent ;
 		content = thecontent ;
 		word_meanings = "" ;
+		footnotes = "" ;
+		ending = "" ;
 		
 		System.out.println("added " + title) ;
 		
 		extractSanskritVerse() ;
 		extractEnglishVerse() ;
 		extractCommentary() ;
+		extractFootnotes() ;
+		extractVerseEnding() ;
 	}
 	
 	void extractSanskritVerse() {
@@ -114,6 +120,49 @@ class Shloka {
 		commentary = rawCommentary.trim() ;
 
 	}
+	
+	void extractFootnotes() {
+		
+		if (!commentary.contains("Footnote")) {
+			return ;
+		}
+		
+		String [] result = commentary.split("Footnote") ;
+		
+		footnotes = "Notes" + result[1].substring(1, result[1].length()) ;
+		
+		commentary = result[0] ;
+		//System.out.println(footnotes) ;
+		
+	}
+
+	void extractVerseEnding() {
+		Pattern p = Pattern.compile("<i>(om tatsatiti [a-z ]+[|][|][ ][0-9]+[ ][|][|])</i>") ;
+		Matcher m = p.matcher(commentary) ;
+		
+		String htmlVerse = "" ;
+		int index = 0 ;
+		
+		if (m.find()) {
+			index = m.start() ;
+			htmlVerse = m.group(1) ;
+			htmlVerse = htmlVerse.replaceAll("<i>", "") ;
+			htmlVerse = htmlVerse.replaceAll("</i>", "") ;
+			htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", " ") ;
+			
+			ending = htmlVerse ;
+			commentary = commentary.substring(0, index-1) ;
+			
+			//	System.out.println(">>" + m.group(1) + "<<") ;
+			//System.out.println(m.start() + " " + m.end() + " " + m.group());
+		}
+		
+		
+		//System.out.println(htmlVerse) ;
+		
+		//sanskrit_verse = htmlVerse ;
+	}
+	
 }
 
 class XMLParser {
@@ -170,7 +219,8 @@ class XMLParser {
 			      
 			      String title = getTagValue("title", eElement);
 			      
-			      if (title.contains("hapter") && !title.contains("ummary")) {
+			      if (title.contains("hapter") 
+			    		  && !(title.contains("ummary") || title.contains("ntroduction"))) {
 			    	  
 			    	  String content = getTagValue("content", eElement);
 			    	  //String transformed_content = transformContent(content) ;
@@ -204,7 +254,7 @@ class LatexTransform {
 
 	static String html2latexTitle(String str) {
 		
-		String result = "\\section{" + str + "}" ; 
+		String result = "\\" + "newpage\n" + "\\section{" + str + "}" ; 
 		return result ;
 		
 	}
@@ -248,10 +298,22 @@ class LatexTransform {
 		String finaltext = "\n" ;
 		
 		finaltext +=  html2latexTitle(s.title) + "\n" ;
+		finaltext +=  html2latexWordMeaning(s.word_meanings) + "\n";
 		finaltext +=  html2latexSanskrit(s.sanskrit_verse) +  "\\\\~\\\\\n";
-		finaltext +=  html2latexEnglish(s.english_verse) + "\\\\\n";
-		finaltext +=  html2latexWordMeaning(s.word_meanings) + "\n\\" + "bigskip \n";
+		finaltext +=  html2latexEnglish(s.english_verse) + "\\\\\n\\" + "bigskip \n";
 		finaltext +=  html2latexCommentary(s.commentary) ;				
+		
+		if(!s.footnotes.equals("")) {
+			int seventylen = finaltext.length() * 70 / 100 ;
+			String x1 = finaltext.substring(0, seventylen) ;
+			String x2 = finaltext.substring(seventylen, finaltext.length()) ;
+			finaltext =  x1 + " " + html2latexWordMeaning(s.footnotes) + x2 ;
+			//finaltext +=  html2latexWordMeaning(s.footnotes) + "\n\\" + "bigskip \n";
+		}
+		
+		if(!s.ending.equals("")) {
+			finaltext += "\\" + "bigskip" + html2latexSanskrit(s.ending) + "\n" ; 
+		}
 		return finaltext ;
 	}
 	
