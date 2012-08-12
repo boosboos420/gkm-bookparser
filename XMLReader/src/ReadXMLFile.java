@@ -43,7 +43,7 @@ class Shloka {
 	}
 	
 	void extractSanskritVerse() {
-		Pattern p = Pattern.compile("<i>([a-zA-Z ]+[|])") ;
+		Pattern p = Pattern.compile("<i>([a-zA-Z :<>/]+[|])") ;
 		Matcher m = p.matcher(content) ;
 		
 		String htmlVerse = "" ;
@@ -72,6 +72,11 @@ class Shloka {
 		//System.out.println(htmlVerse) ;
 		
 		sanskrit_verse = htmlVerse ;
+		
+		htmlVerse = htmlVerse.replaceAll("[Uu]vaa?cha", "") ;
+		htmlVerse = htmlVerse.replaceAll("[Dd]hritraashtra", "") ;
+		htmlVerse = htmlVerse.replaceAll("[Ss]anjaya", "") ;
+		
 		
 		p = Pattern.compile("([a-zA-Z]+[ ][a-zA-Z]+)") ;
 		m = p.matcher(htmlVerse) ;
