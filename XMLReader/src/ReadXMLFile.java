@@ -254,7 +254,20 @@ class LatexTransform {
 
 	static String html2latexTitle(String str) {
 		
-		String result = "\\" + "newpage\n" + "\\section{" + str + "}" ; 
+		String newChapter = "" ;
+		
+		if (str.contains("erse 1,")) {
+			Pattern p = Pattern.compile("Chapter ([0-9]+)") ;
+			Matcher m = p.matcher(str) ;
+			
+			if (m.find()) {
+				String chapterNumber = m.group(1) ;
+				//System.out.println("found chapter " + chapterNumber) ;
+				newChapter = "\\chapter{Chapter " + chapterNumber + "} " ;
+			}
+		}
+		
+		String result = newChapter + "\\" + "newpage\n" + "\\section{" + str + "}" ; 
 		return result ;
 		
 	}
