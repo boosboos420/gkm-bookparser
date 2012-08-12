@@ -76,7 +76,8 @@ class Shloka {
 		htmlVerse = htmlVerse.replaceAll("[Uu]vaa?cha", "") ;
 		htmlVerse = htmlVerse.replaceAll("[Dd]hritraashtra", "") ;
 		htmlVerse = htmlVerse.replaceAll("[Ss]anjaya", "") ;
-		
+		htmlVerse = htmlVerse.replaceAll("[Ss]hr[ei]+", "") ;
+		htmlVerse = htmlVerse.replaceAll("[Bb]hagavaa?n", "") ;
 		
 		p = Pattern.compile("([a-zA-Z]+[ ][a-zA-Z]+)") ;
 		m = p.matcher(htmlVerse) ;
