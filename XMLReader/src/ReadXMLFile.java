@@ -17,6 +17,7 @@ class Shloka {
 	public String word_meanings ;
 	public String footnotes ;
 	public String ending ;
+	public String firstTwoWordsShloka ;
 	
 	String content ;
 	int startOfCommentary = 0 ;
@@ -30,6 +31,7 @@ class Shloka {
 		word_meanings = "" ;
 		footnotes = "" ;
 		ending = "" ;
+		firstTwoWordsShloka = "" ;
 		
 		System.out.println("added " + title) ;
 		
@@ -56,7 +58,8 @@ class Shloka {
 		m = p.matcher(content) ;
 		
 		if (m.find()) {
-			htmlVerse = htmlVerse +  "\\\\\\" + "noindent \n" + m.group(1) ;
+			//htmlVerse = htmlVerse +  "\\\\\\" + "noindent \n" + m.group(1) ;
+			htmlVerse = htmlVerse +  "\n" + m.group(1) ;
 			//System.out.println(">>" + m.group(1) + "<<") ;
 			//System.out.println(m.start() + " " + m.end() + " " + m.group());
 		}
@@ -69,6 +72,14 @@ class Shloka {
 		//System.out.println(htmlVerse) ;
 		
 		sanskrit_verse = htmlVerse ;
+		
+		p = Pattern.compile("([a-zA-Z]+[ ][a-zA-Z]+)") ;
+		m = p.matcher(htmlVerse) ;
+		
+		if (m.find()) {
+			firstTwoWordsShloka = m.group(1) ;
+			//System.out.println(">> " + firstTwoWordsShloka ) ;
+		}
 	}
 	
 	void extractEnglishVerse() {
@@ -169,6 +180,12 @@ class XMLParser {
 	
 	static List<Shloka> shlokas = new Vector<Shloka>() ;
 	
+	static String blogXmlFile = "c:\\users\\gkm\\downloads\\blog-07-25-2012.xml" ;
+	static String outTexFile = "c:/users/gkm/downloads/outg1.tex" ;
+	static String texTemplateFile = "c:/users/gkm/downloads/gita-tex-template.tex" ;
+	
+	static Map<String,String> chapterNames = new HashMap<String,String>() ;
+	
 	static String getTagValue(String sTag, Element eElement) {
 		NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
 	 
@@ -198,8 +215,18 @@ class XMLParser {
 	  }
 
 	
-	static List<Shloka> doParse(String inFileName, String outFileName) throws Exception {
-		  
+	static List<Shloka> doParse(String inFileName, String outFileName, String texTemplateFile) throws Exception {
+		
+			chapterNames.put("1", "Arjuna Vishaada Yoga") ;
+			chapterNames.put("2", "Saankhya Yoga") ;
+			chapterNames.put("3", "Karma Yoga") ;
+			chapterNames.put("4", "Jnyana Karma Sanyaasa Yoga") ;
+			chapterNames.put("5", "Karma Sanyaasa Yoga") ;
+			chapterNames.put("6", "Dhyaana Yoga") ;
+			chapterNames.put("7", "Jnyaana Vijnyaana Yoga") ;
+			chapterNames.put("8", "Akshara Brahma Yoga") ;
+			chapterNames.put("9", "Raja Vidya Raja Guhya Yoga") ;
+		
 		 	File fXmlFile = new File(inFileName);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -240,7 +267,7 @@ class XMLParser {
 			
 			//Collections.reverse(shlokas) ;
 			
-			LatexTransform.writeLatexFile(shlokas, outFileName) ;
+			LatexTransform.writeLatexFile(shlokas, outFileName, texTemplateFile) ;
 			
 			return shlokas ;
 	}
@@ -252,29 +279,54 @@ class LatexTransform {
 	
 	
 
-	static String html2latexTitle(String str) {
+	static String html2latexTitle(Shloka s) {
 		
+		String str = s.title ;
 		String newChapter = "" ;
+		String versenum = "" ;
+		String chapterNumber = "" ;
 		
 		if (str.contains("erse 1,")) {
 			Pattern p = Pattern.compile("Chapter ([0-9]+)") ;
 			Matcher m = p.matcher(str) ;
 			
 			if (m.find()) {
-				String chapterNumber = m.group(1) ;
+				chapterNumber = m.group(1) ;
 				//System.out.println("found chapter " + chapterNumber) ;
-				newChapter = "\\chapter{Chapter " + chapterNumber + "} " ;
+				newChapter = "\\chapter"
+				+ "{" + XMLParser.chapterNames.get(chapterNumber) + "} " ;
 			}
 		}
 		
-		String result = newChapter + "\\" + "newpage\n" + "\\section{" + str + "}" ; 
+		
+		Pattern p = Pattern.compile("Verse.? ([0-9]+)") ;
+		Matcher m = p.matcher(str) ;
+		if (m.find() ) {
+			versenum = m.group(1) ;
+		}
+		
+		p = Pattern.compile("Chapter ([0-9]+)") ;
+		m = p.matcher(str) ;
+		if (m.find() ) {
+			chapterNumber = m.group(1) ;
+		}
+		
+		
+		String result = newChapter + "\\" + "newpage\n" + "\\section"
+				+ "[" + chapterNumber + "." + versenum + " " + s.firstTwoWordsShloka + "]"
+				+"{" + str + "}" ; 
 		return result ;
 		
 	}
 	
 	static String html2latexSanskrit(String str) {
 		
-		String result = "\\textit{" + str + "}" ; 
+		String result = "\\textit{" + str + "}" ;
+		
+		result = result.replaceAll("[\n]", "~\\\\\\\\" + "\n " + "\\\\" + "noindent ") ;
+		
+		//System.out.println(result) ;
+		
 		return result ;
 		
 	}
@@ -287,7 +339,7 @@ class LatexTransform {
 	
 	static String html2latexWordMeaning(String str) {
 		str = str.replaceAll("\n", "~\\\\\\\\\n") ;
-		String result = "\\marginnote{" + str + "}" ; 
+		String result = "\\marginnote{" + str + "}\n" ; 
 		return result ;
 		
 	}
@@ -310,7 +362,7 @@ class LatexTransform {
 	static String finalLatex(Shloka s) {
 		String finaltext = "\n" ;
 		
-		finaltext +=  html2latexTitle(s.title) + "\n" ;
+		finaltext +=  html2latexTitle(s) + "\n" ;
 		finaltext +=  html2latexWordMeaning(s.word_meanings) + "\n";
 		finaltext +=  html2latexSanskrit(s.sanskrit_verse) +  "\\\\~\\\\\n";
 		finaltext +=  html2latexEnglish(s.english_verse) + "\\\\\n\\" + "bigskip \n";
@@ -318,9 +370,18 @@ class LatexTransform {
 		
 		if(!s.footnotes.equals("")) {
 			int seventylen = finaltext.length() * 70 / 100 ;
-			String x1 = finaltext.substring(0, seventylen) ;
-			String x2 = finaltext.substring(seventylen, finaltext.length()) ;
-			finaltext =  x1 + " " + html2latexWordMeaning(s.footnotes) + x2 ;
+			
+			int offset = 0 ;
+			
+			while(finaltext.charAt(seventylen + offset) != ' ') {
+				++offset ;
+			}
+			
+			String x1 = finaltext.substring(0, seventylen + offset) ;
+			String x2 = finaltext.substring(seventylen + offset, finaltext.length()) ;
+			
+			
+			finaltext =  x1 + " " + html2latexWordMeaning(s.footnotes) + " " + x2 ;
 			//finaltext +=  html2latexWordMeaning(s.footnotes) + "\n\\" + "bigskip \n";
 		}
 		
@@ -330,13 +391,28 @@ class LatexTransform {
 		return finaltext ;
 	}
 	
-	static void writeLatexFile(List <Shloka> shlokas, String path) throws Exception {
-		  BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
+	static void writeLatexFile(List <Shloka> shlokas, String path, String texTemplateFile) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader(texTemplateFile));
+		String line = "" ;
+		String footer = "\\" + "end{document}" + "\n";
+		StringBuffer header = new StringBuffer();
+		
+		while ((line = br.readLine()) != null) {
+			header.append(line);
+			header.append("\n") ;
+		}  
+		
+		br.close();
+		
+		
+		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
 		  
+		writer.write(header.toString()) ;
+		writer.write("\n\n") ;
 		  for (int i = shlokas.size()-1 ; i >= 0; --i) {
 			  writer.write(finalLatex(shlokas.get(i))) ;
 		  }
-		  
+		writer.write(footer) ;  
 		  writer.close() ;
 	  }
 
@@ -351,7 +427,9 @@ public class ReadXMLFile {
 		
 		try {
 		//doMain() ;
-		XMLParser.doParse("c:\\users\\gkm\\downloads\\blog-07-25-2012.xml", "c:/users/gkm/downloads/gita-out.txt") ;
+		XMLParser.doParse(XMLParser.blogXmlFile, 
+				XMLParser.outTexFile,
+				XMLParser.texTemplateFile) ;
 		  
 		
 		} catch (Exception e) {
