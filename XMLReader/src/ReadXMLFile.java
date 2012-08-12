@@ -41,7 +41,7 @@ class Shloka {
 	}
 	
 	void extractSanskritVerse() {
-		Pattern p = Pattern.compile("<i>([a-z ]+[|])") ;
+		Pattern p = Pattern.compile("<i>([a-zA-Z ]+[|])") ;
 		Matcher m = p.matcher(content) ;
 		
 		String htmlVerse = "" ;
@@ -52,7 +52,7 @@ class Shloka {
 			//System.out.println(m.start() + " " + m.end() + " " + m.group());
 		}
 		
-		p = Pattern.compile("([a-z ]+[|][|][ ]*[0-9]+[ ]*[|][|])") ;
+		p = Pattern.compile("([a-zA-Z ]+[|][|][ ]*[0-9]+[ ]*[|][|])") ;
 		m = p.matcher(content) ;
 		
 		if (m.find()) {
