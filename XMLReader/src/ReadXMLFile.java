@@ -299,7 +299,7 @@ class LatexTransform {
 		}
 		
 		
-		Pattern p = Pattern.compile("Verse.? ([0-9]+)") ;
+		Pattern p = Pattern.compile("Verse.? ([0-9-]+)") ;
 		Matcher m = p.matcher(str) ;
 		if (m.find() ) {
 			versenum = m.group(1) ;
