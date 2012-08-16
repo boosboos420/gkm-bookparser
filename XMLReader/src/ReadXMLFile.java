@@ -10,6 +10,9 @@ import java.util.regex.* ;
 
 class Shloka {
 	
+	final static int VERSE = 100 ;
+	final static int SUMMARY = 200 ;
+	
 	public String title ;
 	public String sanskrit_verse ;
 	public String english_verse ;
@@ -22,6 +25,20 @@ class Shloka {
 	String content ;
 	int startOfCommentary = 0 ;
 	
+	public int type ;
+	
+	Shloka(String thetitle, String thecontent, int thetype) {
+		type = thetype ;
+		commentary = thecontent ;
+		
+		commentary = commentary.replaceAll("<br[ ]*/>", "\n") ;
+		commentary = commentary.replaceAll("[&]nbsp;", "") ;
+		
+		title = thetitle ;
+		
+		System.out.println("added " + title) ;
+	}
+	
 	Shloka(String thetitle, String thecontent) {
 		title = thetitle ;
 		sanskrit_verse = "" ;
@@ -32,6 +49,7 @@ class Shloka {
 		footnotes = "" ;
 		ending = "" ;
 		firstTwoWordsShloka = "" ;
+		type = VERSE ;
 		
 		System.out.println("added " + title) ;
 		
@@ -118,10 +136,15 @@ class Shloka {
 		int endOfMeanings = 0 ;
 		
 		Pattern p = Pattern.compile("([A-Za-z- ]+:[A-Za-z- /]+)<br[ ]*/>") ;
+		//Pattern p = Pattern.compile("([A-Za-z- <>/]+):([A-Za-z- <>/]+)") ;
 		Matcher m = p.matcher(content) ;
 		
 		while (m.find()) {
-			word_meanings = word_meanings + m.group(1) + "\n" ;
+			word_meanings = word_meanings 
+					+ m.group(1).replaceAll("<br[ ]*/>", " ") 
+					//+ " : "
+					//+ m.group(2).replaceAll("<br[ ]*/>", "\n") 
+					+ "\n" ;
 			endOfMeanings = m.end() ;
 			//System.out.println(">>" + word_meanings + "<<") ;
 			//System.out.println(m.start() + " " + m.end());
@@ -264,6 +287,12 @@ class XMLParser {
 			      //System.out.println("Salary : " + getTagValue("salary", eElement));
 			    	  
 			    	  shlokas.add(new Shloka(title, content)) ;
+			      } else if (title.contains("ummary")) {
+			    	 // System.out.println("found chapter summary") ;
+			    	  String content = getTagValue("content", eElement);
+			    	//  System.out.println("Content : " + content);
+			    	  shlokas.add(new Shloka(title, content, Shloka.SUMMARY)) ;
+			    	  
 			      }
 	 
 			   }
@@ -309,6 +338,8 @@ class LatexTransform {
 		Matcher m = p.matcher(str) ;
 		if (m.find() ) {
 			versenum = m.group(1) ;
+		} else if (s.type == Shloka.SUMMARY) {
+			versenum = "S" ;
 		}
 		
 		p = Pattern.compile("Chapter ([0-9]+)") ;
@@ -366,7 +397,15 @@ class LatexTransform {
 	}
 
 	static String finalLatex(Shloka s) {
+		
 		String finaltext = "\n" ;
+		
+		if (s.type == Shloka.SUMMARY) {
+			finaltext +=  html2latexTitle(s) + "\n" ;
+			finaltext +=  html2latexCommentary(s.commentary) ;
+			//System.out.println(finaltext) ;
+			return finaltext ;
+		}
 		
 		finaltext +=  html2latexTitle(s) + "\n" ;
 		finaltext +=  html2latexWordMeaning(s.word_meanings) + "\n";
