@@ -102,6 +102,9 @@ class Shloka {
 		
 		if (m.find()) {
 			firstTwoWordsShloka = m.group(1) ;
+			String firstChar = Character.toString(firstTwoWordsShloka.charAt(0)).toUpperCase() ;
+			firstTwoWordsShloka = firstChar + firstTwoWordsShloka.substring(1) ;
+			
 			//System.out.println(">> " + firstTwoWordsShloka ) ;
 		}
 	}
@@ -340,6 +343,7 @@ class LatexTransform {
 			versenum = m.group(1) ;
 		} else if (s.type == Shloka.SUMMARY) {
 			versenum = "S" ;
+			s.firstTwoWordsShloka = "Summary" ;
 		}
 		
 		p = Pattern.compile("Chapter ([0-9]+)") ;
