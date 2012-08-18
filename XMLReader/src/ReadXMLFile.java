@@ -30,12 +30,14 @@ class Shloka {
 	Shloka(String thetitle, String thecontent, int thetype) {
 		type = thetype ;
 		commentary = thecontent ;
+		footnotes = "" ;
 		
 		commentary = commentary.replaceAll("<br[ ]*/>", "\n") ;
 		commentary = commentary.replaceAll("[&]nbsp;", "") ;
 		
 		title = thetitle ;
 		
+		extractFootnotes() ;
 		System.out.println("added " + title) ;
 	}
 	
@@ -46,7 +48,6 @@ class Shloka {
 		commentary = thecontent ;
 		content = thecontent ;
 		word_meanings = "" ;
-		footnotes = "" ;
 		ending = "" ;
 		firstTwoWordsShloka = "" ;
 		type = VERSE ;
@@ -342,7 +343,7 @@ class LatexTransform {
 		if (m.find() ) {
 			versenum = m.group(1) ;
 		} else if (s.type == Shloka.SUMMARY) {
-			versenum = "S" ;
+			versenum = "S " ;
 			s.firstTwoWordsShloka = "Summary" ;
 		}
 		
@@ -408,7 +409,7 @@ class LatexTransform {
 			finaltext +=  html2latexTitle(s) + "\n" ;
 			finaltext +=  html2latexCommentary(s.commentary) ;
 			//System.out.println(finaltext) ;
-			return finaltext ;
+			return appendFootNote(s, finaltext) ;
 		}
 		
 		finaltext +=  html2latexTitle(s) + "\n" ;
@@ -417,7 +418,7 @@ class LatexTransform {
 		finaltext +=  html2latexEnglish(s.english_verse) + "\\\\\n\\" + "bigskip \n";
 		finaltext +=  html2latexCommentary(s.commentary) ;				
 		
-		if(!s.footnotes.equals("")) {
+		/* if(!s.footnotes.equals("")) {
 			int seventylen = finaltext.length() * 70 / 100 ;
 			
 			int offset = 0 ;
@@ -432,12 +433,34 @@ class LatexTransform {
 			
 			finaltext =  x1 + " " + html2latexWordMeaning(s.footnotes) + " " + x2 ;
 			//finaltext +=  html2latexWordMeaning(s.footnotes) + "\n\\" + "bigskip \n";
-		}
+		}*/
+		
+		finaltext = appendFootNote(s, finaltext) ;
 		
 		if(!s.ending.equals("")) {
 			finaltext += "\\" + "bigskip" + html2latexSanskrit(s.ending) + "\n" ; 
 		}
 		return finaltext ;
+	}
+
+	static String appendFootNote(Shloka s, String finaltext) {
+		if(!s.footnotes.equals("")) {
+			int seventylen = finaltext.length() * 70 / 100 ;
+			int offset = 0 ;
+		
+			while(finaltext.charAt(seventylen + offset) != ' ') {
+				++offset ;
+			}
+		
+			String x1 = finaltext.substring(0, seventylen + offset) ;
+			String x2 = finaltext.substring(seventylen + offset, finaltext.length()) ;
+		
+		
+			return  x1 + " " + html2latexWordMeaning(s.footnotes) + " " + x2 ;
+		//finaltext +=  html2latexWordMeaning(s.footnotes) + "\n\\" + "bigskip \n";
+		} else {
+			return finaltext ;
+		}
 	}
 	
 	static void writeLatexFile(List <Shloka> shlokas, String path, String texTemplateFile) throws Exception {
