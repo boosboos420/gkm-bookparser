@@ -51,6 +51,7 @@ class Shloka {
 		ending = "" ;
 		firstTwoWordsShloka = "" ;
 		type = VERSE ;
+		footnotes = "" ;
 		
 		System.out.println("added " + title) ;
 		
