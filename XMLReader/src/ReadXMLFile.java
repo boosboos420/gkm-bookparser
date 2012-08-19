@@ -432,7 +432,7 @@ class LatexTransform {
 		
 		List<String> terms = s.terms ;
 		String result = "" ;
-		Pattern p = Pattern.compile("[0-9]+([.][0-9]+") ;
+		Pattern p = Pattern.compile("[0-9]+([.][0-9]+)?") ;
 		
 		for (int i = 0; i < terms.size(); ++i) {
 			String str = terms.get(i) ;
