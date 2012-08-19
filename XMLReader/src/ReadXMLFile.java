@@ -21,6 +21,7 @@ class Shloka {
 	public String footnotes ;
 	public String ending ;
 	public String firstTwoWordsShloka ;
+	public List <String> terms ;
 	
 	String content ;
 	int startOfCommentary = 0 ;
@@ -36,12 +37,13 @@ class Shloka {
 		commentary = commentary.replaceAll("[&]nbsp;", "") ;
 		
 		title = thetitle ;
+	
 		
 		extractFootnotes() ;
 		System.out.println("added " + title) ;
 	}
 	
-	Shloka(String thetitle, String thecontent) {
+	Shloka(String thetitle, String thecontent,List<String> theTerms) {
 		title = thetitle ;
 		sanskrit_verse = "" ;
 		english_verse = "" ;
@@ -52,6 +54,8 @@ class Shloka {
 		firstTwoWordsShloka = "" ;
 		type = VERSE ;
 		footnotes = "" ;
+		
+		terms = theTerms ;
 		
 		System.out.println("added " + title) ;
 		
@@ -227,6 +231,15 @@ class XMLParser {
 	 
 		return nValue.getNodeValue();
 	  }
+	
+	static NodeList getTagValues(String sTag, Element eElement) {
+		NodeList nlList = eElement.getElementsByTagName(sTag);
+	 
+		return nlList ;
+	        //Node nValue = (Node) nlList.item(0);
+	 
+		//return nValue.getNodeValue();
+	  }
 	  
 	  static void writeFile(String path) throws Exception {
 		  BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
@@ -291,7 +304,9 @@ class XMLParser {
 		              //System.out.println("Nick Name : " + getTagValue("nickname", eElement));
 			      //System.out.println("Salary : " + getTagValue("salary", eElement));
 			    	  
-			    	  shlokas.add(new Shloka(title, content)) ;
+			    	  shlokas.add(new Shloka(title, content, extractTerms(eElement))) ;
+			    	  
+			    	   
 			      } else if (title.contains("ummary")) {
 			    	 // System.out.println("found chapter summary") ;
 			    	  String content = getTagValue("content", eElement);
@@ -311,7 +326,33 @@ class XMLParser {
 			
 			return shlokas ;
 	}
-		 	
+	
+	static List<String> extractTerms(Element theElement) {
+
+		List <String>terms = new ArrayList<String> () ;
+		
+		NodeList categories = getTagValues("category", theElement);
+  	  //System.out.println(categories) ;
+		
+  	  //System.out.println(categories) ;
+  		  for (int j = 0; j < categories.getLength(); j++) {
+  		
+  			Node termNode = categories.item(j);
+  		
+  			if (termNode.getNodeType() == Node.ELEMENT_NODE) {
+	 
+  				Element tElem = (Element) termNode;
+			      
+			      //String term = getTagValue("term", tElem);
+			      
+				  //System.out.println(tElem.getAttribute("term")) ;
+  				  terms.add(tElem.getAttribute("term")) ;
+				   }
+  		  }
+  	  
+		return terms ;
+	}
+			 	
 }
 
 class LatexTransform {
@@ -387,6 +428,28 @@ class LatexTransform {
 		
 	}
 
+	static String txt2latexTerms(Shloka s) {
+		
+		List<String> terms = s.terms ;
+		String result = "" ;
+		Pattern p = Pattern.compile("[0-9]+([.][0-9]+") ;
+		
+		for (int i = 0; i < terms.size(); ++i) {
+			String str = terms.get(i) ;
+			
+			if(str.startsWith("http") || str.contains("chapter") || p.matcher(str).matches()) {
+				continue ;
+			}
+			
+			str = str.replaceAll("\n", "~\\\\\\\\\n") ;
+			result += "\\index{" + str + "}\n" ; 
+		}
+		
+		//result ;
+		
+		return result ;
+		
+	}
 
 
 	static String html2latexCommentary(String str) {
@@ -418,6 +481,7 @@ class LatexTransform {
 		finaltext +=  html2latexSanskrit(s.sanskrit_verse) +  "\\\\~\\\\\n";
 		finaltext +=  html2latexEnglish(s.english_verse) + "\\\\\n\\" + "bigskip \n";
 		finaltext +=  html2latexCommentary(s.commentary) ;				
+		finaltext +=  txt2latexTerms(s) ;	
 		
 		/* if(!s.footnotes.equals("")) {
 			int seventylen = finaltext.length() * 70 / 100 ;
@@ -467,7 +531,7 @@ class LatexTransform {
 	static void writeLatexFile(List <Shloka> shlokas, String path, String texTemplateFile) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader(texTemplateFile));
 		String line = "" ;
-		String footer = "\\" + "end{document}" + "\n";
+		String footer = "\\" + "printindex\n" + "\\" + "end{document}" + "\n";
 		StringBuffer header = new StringBuffer();
 		
 		while ((line = br.readLine()) != null) {
