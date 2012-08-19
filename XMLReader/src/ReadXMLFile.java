@@ -407,7 +407,12 @@ class LatexTransform {
 		
 		String result = "\\textit{" + str + "}" ;
 		
+		result = result.replaceAll("[ ][Uu]vacha[ :]?", " uvaacha:" + "\n") ;
+		result = result.replaceAll("[ ][Uu]vaacha[ :]?", " uvaacha:" + "\n") ;
+				
 		result = result.replaceAll("[\n]", "~\\\\\\\\" + "\n " + "\\\\" + "noindent ") ;
+		
+		
 		
 		//System.out.println(result) ;
 		
