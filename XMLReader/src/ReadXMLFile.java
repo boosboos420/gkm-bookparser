@@ -66,7 +66,36 @@ class Shloka {
 		extractVerseEnding() ;
 	}
 	
+	String getRawVerse() {
+		String htmlVerse = "" ;
+		String splitResult [] ;
+		int splitLineCount = 0 ;
+		
+		splitResult = content.split("</i>") ;
+		splitLineCount = splitResult.length ;
+				
+		//System.out.println(splitLineCount) ;
+		
+		for (int i = 0; i < splitLineCount-1; ++i) {
+			String splitLine = splitResult[i] ;
+			//System.out.println(splitLine) ;	
+			
+			if (splitLine.contains("om tatsatiti")) {
+			//	System.out.println("got om, skipping") ;
+				continue ;
+			}
+	
+			htmlVerse += splitLine + "\n" ;
+		}
+		
+		return htmlVerse ;
+	}
+	
+	
+	
 	void extractSanskritVerse() {
+		
+		/*
 		Pattern p = Pattern.compile("<i>([a-zA-Z :<>/]+[|])") ;
 		Matcher m = p.matcher(content) ;
 		
@@ -74,8 +103,8 @@ class Shloka {
 		
 		if (m.find()) {
 			htmlVerse = m.group(1) ;
-			//System.out.println(">>" + m.group(1) + "<<") ;
-			//System.out.println(m.start() + " " + m.end() + " " + m.group());
+		//	System.out.println(">>" + m.group(1) + "<<") ;
+		//	System.out.println(m.start() + " " + m.end() + " " + m.group());
 		}
 		
 		p = Pattern.compile("([a-zA-Z ]+[|][|][ ]*[0-9]+[ ]*[|][|])") ;
@@ -87,11 +116,17 @@ class Shloka {
 			//System.out.println(">>" + m.group(1) + "<<") ;
 			//System.out.println(m.start() + " " + m.end() + " " + m.group());
 		}
+		*/
 		
+		String htmlVerse = getRawVerse() ;
+		Pattern p ;
+		Matcher m ;
 		
 		htmlVerse = htmlVerse.replaceAll("<i>", "") ;
 		htmlVerse = htmlVerse.replaceAll("</i>", "") ;
-		htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", " ") ;
+		htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", "\n") ;
+		htmlVerse = htmlVerse.replaceAll("[&]nbsp;", "") ;
+		htmlVerse = htmlVerse.replaceAll("&gt;", ">") ;
 		
 		//System.out.println(htmlVerse) ;
 		
@@ -114,6 +149,7 @@ class Shloka {
 			//System.out.println(">> " + firstTwoWordsShloka ) ;
 		}
 	}
+	
 	
 	void extractEnglishVerse() {
 		Pattern p = Pattern.compile("<b>(.*)</b>") ;
@@ -218,7 +254,7 @@ class XMLParser {
 	
 	static List<Shloka> shlokas = new Vector<Shloka>() ;
 	
-	static String blogXmlFile = "c:\\users\\gkm\\downloads\\blog-07-25-2012.xml" ;
+	static String blogXmlFile = "c:\\users\\gkm\\downloads\\blog-08-29-2012.xml" ;
 	static String outTexFile = "c:/users/gkm/downloads/outg1.tex" ;
 	static String texTemplateFile = "c:/users/gkm/downloads/gita-tex-template.tex" ;
 	
@@ -409,8 +445,10 @@ class LatexTransform {
 		
 		result = result.replaceAll("[ ][Uu]vacha[ :]?", " uvaacha:" + "\n") ;
 		result = result.replaceAll("[ ][Uu]vaacha[ :]?", " uvaacha:" + "\n") ;
-				
+		
+		result = result.replaceAll("[\n]+", "\n") ;
 		result = result.replaceAll("[\n]", "~\\\\\\\\" + "\n " + "\\\\" + "noindent ") ;
+		//result = result.replaceAll("<br[ ][/]>", "~\\\\\\\\" + "\n " + "\\\\" + "noindent ") ;
 		
 		
 		
