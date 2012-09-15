@@ -256,7 +256,7 @@ class XMLParser {
 	
 	static String blogXmlFile = "c:\\users\\gkm\\downloads\\blog-08-29-2012.xml" ;
 	static String outTexFile = "c:/users/gkm/downloads/outg1.tex" ;
-	static String texTemplateFile = "c:/users/gkm/downloads/gita-tex-template.tex" ;
+	static String texTemplateFile = "c:/users/gkm/workspace/gkm-bookparser/XMLReader/src/gita-tex-template.tex" ;
 	
 	static Map<String,String> chapterNames = new HashMap<String,String>() ;
 	
