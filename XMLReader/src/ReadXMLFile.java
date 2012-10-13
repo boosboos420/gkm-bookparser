@@ -254,7 +254,7 @@ class XMLParser {
 	
 	static List<Shloka> shlokas = new Vector<Shloka>() ;
 	
-	static String blogXmlFile = "c:\\users\\gkm\\downloads\\blog-08-29-2012.xml" ;
+	static String blogXmlFile = "c:\\users\\gkm\\downloads\\blog-10-13-2012.xml" ;
 	static String outTexFile = "c:/users/gkm/downloads/outg1.tex" ;
 	static String texTemplateFile = "c:/users/gkm/workspace/gkm-bookparser/XMLReader/src/gita-tex-template.tex" ;
 	
@@ -309,7 +309,8 @@ class XMLParser {
 			chapterNames.put("7", "Jnyaana Vijnyaana Yoga") ;
 			chapterNames.put("8", "Akshara Brahma Yoga") ;
 			chapterNames.put("9", "Raja Vidya Raja Guhya Yoga") ;
-		
+			chapterNames.put("10", "Vibhooti Yoga") ;
+			
 		 	File fXmlFile = new File(inFileName);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -574,7 +575,7 @@ class LatexTransform {
 	static void writeLatexFile(List <Shloka> shlokas, String path, String texTemplateFile) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader(texTemplateFile));
 		String line = "" ;
-		String footer = "\\" + "printindex\n" + "\\" + "end{document}" + "\n";
+		String footer = "\n" + "\\" + "printindex\n" + "\\" + "end{document}" + "\n";
 		StringBuffer header = new StringBuffer();
 		
 		while ((line = br.readLine()) != null) {
