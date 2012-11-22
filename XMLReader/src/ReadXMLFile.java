@@ -499,7 +499,7 @@ class LatexTransform {
 	static String html2latexCommentary(String str) {
 		
 		String result = str.replaceAll("\n\n", "\n") ;
-		result = result.replaceAll("\n", "\n~\\\\\\\\") ; 
+		result = result.replaceAll("\n", "\\\\\\\\\n~\\\\\\\\") ; 
 		result = result.replaceAll("&gt;", ">") ;
 		result = result.replaceAll("&rsquo;", "'") ;
 		result = result.replaceAll("“", "\"") ;
@@ -523,7 +523,7 @@ class LatexTransform {
 		finaltext +=  html2latexTitle(s) + "\n" ;
 		finaltext +=  html2latexWordMeaning(s.word_meanings) + "\n";
 		finaltext +=  html2latexSanskrit(s.sanskrit_verse) +  "\\\\~\\\\\n";
-		finaltext +=  html2latexEnglish(s.english_verse) + "\\\\\n\\" + "bigskip \n";
+		finaltext +=  html2latexEnglish(s.english_verse) + "\\\\\n\\" + "\\\\\\\\ \n";
 		finaltext +=  html2latexCommentary(s.commentary) ;				
 		finaltext +=  txt2latexTerms(s) ;	
 		
@@ -541,13 +541,13 @@ class LatexTransform {
 			
 			
 			finaltext =  x1 + " " + html2latexWordMeaning(s.footnotes) + " " + x2 ;
-			//finaltext +=  html2latexWordMeaning(s.footnotes) + "\n\\" + "bigskip \n";
+			//finaltext +=  html2latexWordMeaning(s.footnotes) + "\n\\" + "\\\\\\\\ \n";
 		}*/
 		
 		finaltext = appendFootNote(s, finaltext) ;
 		
 		if(!s.ending.equals("")) {
-			finaltext += "\\" + "bigskip" + html2latexSanskrit(s.ending) + "\n" ; 
+			finaltext += "\\" + "\\\\\\\\" + html2latexSanskrit(s.ending) + "\n" ; 
 		}
 		return finaltext ;
 	}
@@ -566,7 +566,7 @@ class LatexTransform {
 		
 		
 			return  x1 + " " + html2latexWordMeaning(s.footnotes) + " " + x2 ;
-		//finaltext +=  html2latexWordMeaning(s.footnotes) + "\n\\" + "bigskip \n";
+		//finaltext +=  html2latexWordMeaning(s.footnotes) + "\n\\" + "\\\\\\\\ \n";
 		} else {
 			return finaltext ;
 		}
