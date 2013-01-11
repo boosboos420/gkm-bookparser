@@ -551,7 +551,7 @@ class LatexTransform {
 		finaltext = appendFootNote(s, finaltext) ;
 		
 		if(!s.ending.equals("")) {
-			finaltext += "\\" + "\\\\\\\\" + html2latexSanskrit(s.ending) + "\n" ; 
+			finaltext += html2latexSanskrit(s.ending) + "\n" ; 
 		}
 		return finaltext ;
 	}
