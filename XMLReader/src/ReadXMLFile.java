@@ -318,7 +318,8 @@ class XMLParser {
 			chapterNames.put("12", "Bhakti Yoga") ;
 			chapterNames.put("13", "Kshetra Kshetrajnya Vibhaaga Yoga") ;
 			chapterNames.put("14", "Gunatraya Vibhaaga Yoga") ;
-			
+			chapterNames.put("15", "Purushottam Yoga") ;
+					
 		 	File fXmlFile = new File(inFileName);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
