@@ -471,12 +471,14 @@ class LatexTransform {
 
 	static String html2latexEnglish(String str) {
 		String result = "\\" + "noindent" + "\\textbf{" + str + "}" ; 
+		result = result.replaceAll("\u2019", "'") ;
 		return result ;
 		
 	}
 	
 	static String html2latexWordMeaning(String str) {
 		str = str.replaceAll("\n", "~\\\\\\\\\n") ;
+		str = str.replaceAll("\u2019", "'") ;
 		String result = "\\marginnote{" + str + "}\n" ; 
 		return result ;
 		
@@ -514,6 +516,7 @@ class LatexTransform {
 		result = result.replaceAll("&rsquo;", "'") ;
 		result = result.replaceAll("“", "\"") ;
 		result = result.replaceAll("”", "\"") ;
+		result = result.replaceAll("\u2019", "'") ;
 		result = result.replaceAll("%", " pct") ;
 		return result ;
 		
