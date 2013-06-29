@@ -321,6 +321,8 @@ class XMLParser {
 			chapterNames.put("15", "Purushottam Yoga") ;
 			chapterNames.put("16", "Daivaasursampad Vibhaaga Yoga") ;
 			chapterNames.put("17", "Shraddhatraya Vibhaaga Yoga") ;
+			chapterNames.put("18", "Moksha Sanyaasa Yoga") ;
+			
 			
 		 	File fXmlFile = new File(inFileName);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -592,6 +594,8 @@ class LatexTransform {
 		String footer = "\n" + "\\" + "printindex\n" + "\\" + "end{document}" + "\n";
 		StringBuffer header = new StringBuffer();
 		
+		System.out.println("Reading template file " + texTemplateFile) ;
+		
 		while ((line = br.readLine()) != null) {
 			header.append(line);
 			header.append("\n") ;
@@ -599,6 +603,8 @@ class LatexTransform {
 		
 		br.close();
 		
+		
+		System.out.println("Writing output file " + path) ;
 		
 		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
 		  
