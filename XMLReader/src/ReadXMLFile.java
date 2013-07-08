@@ -13,14 +13,14 @@ class Shloka {
 	final static int VERSE = 100 ;
 	final static int SUMMARY = 200 ;
 	
-	public String title ;
-	public String sanskrit_verse ;
-	public String english_verse ;
-	public String commentary;
-	public String word_meanings ;
-	public String footnotes ;
-	public String ending ;
-	public String firstTwoWordsShloka ;
+	public String title = "" ;
+	public String sanskrit_verse  = "" ;
+	public String english_verse  = "" ;
+	public String commentary = "" ;
+	public String word_meanings  = "" ;
+	public String footnotes  = "" ;
+	public String ending  = "" ;
+	public String firstTwoWordsShloka  = "" ;
 	public List <String> terms ;
 	
 	String content ;
@@ -252,6 +252,20 @@ class Shloka {
 		//sanskrit_verse = htmlVerse ;
 	}
 	
+	void simpleSerialize(BufferedWriter buf) throws Exception {
+			buf.write(title) ;
+			buf.newLine() ;
+			
+			buf.write(sanskrit_verse) ;
+			buf.newLine() ;
+			
+			buf.write(english_verse) ;
+			buf.newLine() ;
+			
+			buf.write(commentary) ;
+			buf.newLine() ;
+	}
+	
 }
 
 class XMLParser {
@@ -280,25 +294,24 @@ class XMLParser {
 	 
 		//return nValue.getNodeValue();
 	  }
-	  
-	  static void writeFile(String path) throws Exception {
+	
+	static void writeFile(String path) throws Exception {
+		  System.out.print("Writing to file .. " + path + " , ") ;
+		  
 		  BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
 		  
-		  for (int i = 0; i < shlokas.size(); ++i) {
-			  writer.write(shlokas.get(i).title) ;
-			  writer.write("\n") ;
-			  writer.write(shlokas.get(i).sanskrit_verse) ;
-			  writer.write("\n") ;
-			  writer.write(shlokas.get(i).english_verse) ;
-			  writer.write("\n") ;
-			  writer.write(shlokas.get(i).word_meanings) ;
-			  writer.write("\n") ;
-			  writer.write(shlokas.get(i).commentary) ;
-			  writer.write("\n") ;
-
+		  for (int i = shlokas.size() - 1; i >= 0; --i) {
+			shlokas.get(i).simpleSerialize(writer) ;
+			
+			writer.newLine() ;
+			writer.newLine() ;
+			writer.newLine() ;
+			
 		  }
 		  
 		  writer.close() ;
+		  
+		  System.out.println(" done.") ;
 	  }
 
 	
@@ -373,6 +386,8 @@ class XMLParser {
 			//Collections.reverse(shlokas) ;
 			
 			LatexTransform.writeLatexFile(shlokas, outFileName, texTemplateFile) ;
+			
+			writeFile("c:/users/gkm/downloads/tempout.txt") ;
 			
 			return shlokas ;
 	}
