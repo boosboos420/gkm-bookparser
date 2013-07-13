@@ -6,6 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import com.tutego.jrtf.Rtf;
+import com.tutego.jrtf.RtfPara;
 
 import static com.tutego.jrtf.Rtf.rtf;
 import static com.tutego.jrtf.RtfDocfmt.*;
@@ -334,23 +335,26 @@ class XMLParser {
 
 	static void writeRTFFile(String path) throws Exception {
 		  System.out.print("Writing to file .. " + path + " , ") ;
-		  
-		  /*
-		  BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
+		 
+		  Rtf doc = Rtf.rtf() ;
 		  
 		  for (int i = shlokas.size() - 1; i >= 0; --i) {
+		
+			List <RtfPara> pars = new ArrayList <RtfPara> () ;
+			  
+			StringWriter sw = new StringWriter() ;
+			BufferedWriter writer = new BufferedWriter(sw) ;  
 			shlokas.get(i).simpleSerialize(writer) ;
 			
-			writer.newLine() ;
-			writer.newLine() ;
-			writer.newLine() ;
+			writer.flush() ;
 			
+			pars.add(RtfPara.p(sw.getBuffer().toString())) ;
+ 			
+			doc.section(pars) ;
 		  }
 		  
-		  writer.close() ;
-		  */
-		 
-		  Rtf.rtf().section( p("howdy") ).out( new FileWriter(path) );
+		  
+		  doc.out( new FileWriter(path) );
 		  
 		  System.out.println(" done.") ;
 	  }
