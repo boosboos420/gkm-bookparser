@@ -283,6 +283,29 @@ class Shloka {
 			buf.newLine() ;
 	}
 	
+	List<RtfPara> RTFSerialize() throws Exception {
+		
+		List<RtfPara> paras = new ArrayList<RtfPara>() ;
+		
+		paras.add(RtfPara.p(bold(title))) ;
+		paras.add(RtfPara.p("")) ;
+		
+		paras.add(p(italic(sanskrit_verse))) ;
+		paras.add(RtfPara.p("")) ;
+		
+		paras.add(p(bold(english_verse))) ;
+		paras.add(RtfPara.p("")) ;
+		
+		
+		paras.add(p(commentary)) ;
+		paras.add(RtfPara.p("")) ;
+		
+		
+		
+		return paras ;
+		
+	}
+	
 }
 
 class XMLParser {
@@ -338,19 +361,8 @@ class XMLParser {
 		 
 		  Rtf doc = Rtf.rtf() ;
 		  
-		  for (int i = shlokas.size() - 1; i >= 0; --i) {
-		
-			List <RtfPara> pars = new ArrayList <RtfPara> () ;
-			  
-			StringWriter sw = new StringWriter() ;
-			BufferedWriter writer = new BufferedWriter(sw) ;  
-			shlokas.get(i).simpleSerialize(writer) ;
-			
-			writer.flush() ;
-			
-			pars.add(RtfPara.p(sw.getBuffer().toString())) ;
- 			
-			doc.section(pars) ;
+		  for (int i = shlokas.size() - 1; i >= 0; --i) {	
+			doc.section(shlokas.get(i).RTFSerialize()) ;
 		  }
 		  
 		  
