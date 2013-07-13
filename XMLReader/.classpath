@@ -6,5 +6,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/jrtf-0.7-02.07.2012.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

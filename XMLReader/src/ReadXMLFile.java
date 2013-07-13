@@ -4,9 +4,25 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+
+import com.tutego.jrtf.Rtf;
+
+import static com.tutego.jrtf.Rtf.rtf;
+import static com.tutego.jrtf.RtfDocfmt.*;
+import static com.tutego.jrtf.RtfHeader.*;
+import static com.tutego.jrtf.RtfInfo.*;
+import static com.tutego.jrtf.RtfFields.*;
+import static com.tutego.jrtf.RtfPara.*;
+import static com.tutego.jrtf.RtfSectionFormatAndHeaderFooter.*;
+import static com.tutego.jrtf.RtfText.*;
+import static com.tutego.jrtf.RtfUnit.*;
+
 import java.io.*;
 import java.util.* ;
 import java.util.regex.* ;
+
+import static com.tutego.jrtf.Rtf.rtf ;
+
 
 class Shloka {
 	
@@ -315,6 +331,31 @@ class XMLParser {
 	  }
 
 	
+
+	static void writeRTFFile(String path) throws Exception {
+		  System.out.print("Writing to file .. " + path + " , ") ;
+		  
+		  /*
+		  BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
+		  
+		  for (int i = shlokas.size() - 1; i >= 0; --i) {
+			shlokas.get(i).simpleSerialize(writer) ;
+			
+			writer.newLine() ;
+			writer.newLine() ;
+			writer.newLine() ;
+			
+		  }
+		  
+		  writer.close() ;
+		  */
+		 
+		  Rtf.rtf().section( p("howdy") ).out( new FileWriter(path) );
+		  
+		  System.out.println(" done.") ;
+	  }
+
+	
 	static List<Shloka> doParse(String inFileName, String outFileName, String texTemplateFile) throws Exception {
 		
 			chapterNames.put("1", "Arjuna Vishaada Yoga") ;
@@ -387,7 +428,7 @@ class XMLParser {
 			
 			LatexTransform.writeLatexFile(shlokas, outFileName, texTemplateFile) ;
 			
-			writeFile("c:/users/gkm/downloads/tempout.txt") ;
+			writeRTFFile("c:/users/gkm/downloads/tempout.rtf") ;
 			
 			return shlokas ;
 	}
