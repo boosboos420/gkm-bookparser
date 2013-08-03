@@ -283,6 +283,7 @@ class Shloka {
 			buf.newLine() ;
 	}
 	
+	
 	List<RtfPara> RTFSerialize() throws Exception {
 		
 		List<RtfPara> paras = new ArrayList<RtfPara>() ;
@@ -414,7 +415,7 @@ class XMLParser {
 			      String title = getTagValue("title", eElement);
 			      
 			      if (title.contains("hapter") 
-			    		  && !(title.contains("ummary") || title.contains("ntroduction"))) {
+			    		  && !(title.contains("Summary") || title.contains("ntroduction"))) {
 			    	  
 			    	  String content = getTagValue("content", eElement);
 			    	  //String transformed_content = transformContent(content) ;
@@ -427,7 +428,7 @@ class XMLParser {
 			    	  shlokas.add(new Shloka(title, content, extractTerms(eElement))) ;
 			    	  
 			    	   
-			      } else if (title.contains("ummary")) {
+			      } else if (title.contains("Summary")) {
 			    	 // System.out.println("found chapter summary") ;
 			    	  String content = getTagValue("content", eElement);
 			    	//  System.out.println("Content : " + content);
@@ -698,9 +699,19 @@ public class ReadXMLFile {
  
 	public static void main(String argv[]) {
 		
+		String xmlfile = "" ;
+		
 		try {
-		//doMain() ;
-		XMLParser.doParse(XMLParser.blogXmlFile, 
+		
+		if (argv.length > 0) {
+			xmlfile = argv[0] ;
+		} else {
+			xmlfile = XMLParser.blogXmlFile ;
+		}
+			
+		System.out.println("Reading blog file .. " + xmlfile) ;
+		
+		XMLParser.doParse(xmlfile, 
 				XMLParser.outTexFile,
 				XMLParser.texTemplateFile) ;
 		  
