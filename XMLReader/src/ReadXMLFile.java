@@ -319,6 +319,9 @@ class XMLParser {
 	
 	static Map<String,String> chapterNames = new HashMap<String,String>() ;
 	
+	static boolean showFootnotes = false ;
+	static boolean showSanskritWordMeanings = false ;
+	
 	static String getTagValue(String sTag, Element eElement) {
 		NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
 	 
@@ -606,11 +609,20 @@ class LatexTransform {
 			finaltext +=  html2latexTitle(s) + "\n" ;
 			finaltext +=  html2latexCommentary(s.commentary) ;
 			//System.out.println(finaltext) ;
-			return appendFootNote(s, finaltext) ;
+			
+			if (XMLParser.showFootnotes == true) {
+				return appendFootNote(s, finaltext) ;
+			} else { 
+				return finaltext ;
+			}
 		}
 		
 		finaltext +=  html2latexTitle(s) + "\n" ;
-		finaltext +=  html2latexWordMeaning(s.word_meanings) + "\n";
+		
+		if (XMLParser.showSanskritWordMeanings == true) {
+			finaltext +=  html2latexWordMeaning(s.word_meanings) + "\n";
+		}
+		
 		finaltext +=  html2latexSanskrit(s.sanskrit_verse) +  "\\\\~\\\\\n";
 		finaltext +=  html2latexEnglish(s.english_verse) + "\\\\\n\\" + "\\\\\\\\ \n";
 		finaltext +=  html2latexCommentary(s.commentary) ;				
@@ -633,7 +645,9 @@ class LatexTransform {
 			//finaltext +=  html2latexWordMeaning(s.footnotes) + "\n\\" + "\\\\\\\\ \n";
 		}*/
 		
-		finaltext = appendFootNote(s, finaltext) ;
+		if (XMLParser.showFootnotes == true) {
+			finaltext = appendFootNote(s, finaltext) ;
+		}
 		
 		if(!s.ending.equals("")) {
 			finaltext += html2latexSanskrit(s.ending) + "\n" ; 
