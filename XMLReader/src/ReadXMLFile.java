@@ -319,8 +319,8 @@ class XMLParser {
 	
 	static Map<String,String> chapterNames = new HashMap<String,String>() ;
 	
-	static boolean showFootnotes = false ;
-	static boolean showSanskritWordMeanings = false ;
+	static boolean showFootnotes = true ;
+	static boolean showSanskritWordMeanings = true ;
 	
 	static String getTagValue(String sTag, Element eElement) {
 		NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
