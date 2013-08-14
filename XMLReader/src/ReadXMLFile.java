@@ -319,6 +319,8 @@ class XMLParser {
 	
 	static Map<String,String> chapterNames = new HashMap<String,String>() ;
 	
+	
+	// options
 	static boolean showFootnotes = true ;
 	static boolean showSanskritWordMeanings = true ;
 	
@@ -483,7 +485,7 @@ class XMLParser {
 
 class LatexTransform {
 	
-	
+	static boolean newPageForEachVerse = true ;
 	
 
 	static String html2latexTitle(Shloka s) {
@@ -522,7 +524,10 @@ class LatexTransform {
 		}
 		
 		
-		String result = newChapter + "\\" + "newpage\n" + "\\section"
+		String result = newChapter + "\\" 
+				+ (newPageForEachVerse ? "newpage" : "")  
+				+ "\n" 
+				+ "\\section"
 				+ "[" + chapterNumber + "." + versenum + " " + s.firstTwoWordsShloka + "]"
 				+"{" + str + "}" ; 
 		return result ;
