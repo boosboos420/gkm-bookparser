@@ -329,8 +329,8 @@ class XMLParser {
 	static List<Shloka> shlokas = new Vector<Shloka>() ;
 	
 	static String blogXmlFile = "c:\\users\\gkm\\downloads\\blog-10-13-2012.xml" ;
-	static String outTexFile = "c:/Users/gmarballi/Downloads/bookparser/outg1.tex" ;
-	static String texTemplateFile = "c:/Users/gmarballi/Downloads/bookparser/gita-tex-template.tex" ;
+	static String outTexFile = "c:/Users/gkm/Downloads/outg1.tex" ;
+	static String texTemplateFile = "c:/Users/gkm/workspace/gkm-bookparser/XMLReader/src/gita-tex-template.tex" ;
 	
 	static Map<String,String> chapterNames = new HashMap<String,String>() ;
 	
@@ -478,9 +478,9 @@ class XMLParser {
 			
 			LatexTransform.writeLatexFile(shlokas, outFileName, texTemplateFile) ;
 			
-			writeRTFFile("c:/users/gmarballi/downloads/bookparser/tempout.rtf") ;
+			//writeRTFFile("c:/users/gmarballi/downloads/bookparser/tempout.rtf") ;
 			
-			writeTextFile("c:/users/gmarballi/downloads/bookparser/tempout.txt") ;
+			//writeTextFile("c:/users/gmarballi/downloads/bookparser/tempout.txt") ;
 			
 			return shlokas ;
 	}
@@ -628,8 +628,8 @@ class LatexTransform {
 		result = result.replaceAll("\n", "\\\\\\\\\n~\\\\\\\\") ; 
 		result = result.replaceAll("&gt;", ">") ;
 		result = result.replaceAll("&rsquo;", "'") ;
-		result = result.replaceAll("ï¿½", "\"") ;
-		result = result.replaceAll("ï¿½", "\"") ;
+		result = result.replaceAll("“", "\"") ;
+		result = result.replaceAll("”", "\"") ;
 		result = result.replaceAll("\u2019", "'") ;
 		result = result.replaceAll("%", " pct") ;
 		return result ;
