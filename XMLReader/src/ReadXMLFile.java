@@ -5,6 +5,12 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
+
+import java.io.*;
+import java.util.* ;
+import java.util.regex.* ;
+
+
 import com.tutego.jrtf.Rtf;
 import com.tutego.jrtf.RtfPara;
 
@@ -17,13 +23,6 @@ import static com.tutego.jrtf.RtfPara.*;
 import static com.tutego.jrtf.RtfSectionFormatAndHeaderFooter.*;
 import static com.tutego.jrtf.RtfText.*;
 import static com.tutego.jrtf.RtfUnit.*;
-
-import java.io.*;
-import java.util.* ;
-import java.util.regex.* ;
-
-import static com.tutego.jrtf.Rtf.rtf ;
-
 
 class Shloka {
 	
@@ -57,7 +56,8 @@ class Shloka {
 	
 		
 		extractFootnotes() ;
-		System.out.println("added " + title) ;
+		// System.out.println("added " + title) ;
+		System.out.print(".") ;
 	}
 	
 	Shloka(String thetitle, String thecontent,List<String> theTerms) {
@@ -74,7 +74,8 @@ class Shloka {
 		
 		terms = theTerms ;
 		
-		System.out.println("added " + title) ;
+		//System.out.println("added " + title) ;
+		System.out.print(".") ;
 		
 		extractSanskritVerse() ;
 		extractEnglishVerse() ;
@@ -185,8 +186,8 @@ class Shloka {
 		htmlVerse = htmlVerse.replaceAll("</b>", "") ;
 		htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", "") ;
 		htmlVerse = htmlVerse.replaceAll("[&]nbsp;", "") ;
-		htmlVerse = htmlVerse.replaceAll("“", "\"") ;
-		htmlVerse = htmlVerse.replaceAll("”", "\"") ;
+		htmlVerse = htmlVerse.replaceAll("ï¿½", "\"") ;
+		htmlVerse = htmlVerse.replaceAll("ï¿½", "\"") ;
 		
 		//System.out.println(htmlVerse) ;
 		
@@ -253,8 +254,8 @@ class Shloka {
 			htmlVerse = htmlVerse.replaceAll("<i>", "") ;
 			htmlVerse = htmlVerse.replaceAll("</i>", "") ;
 			htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", " ") ;
-			htmlVerse = htmlVerse.replaceAll("“", "\"") ;
-			htmlVerse = htmlVerse.replaceAll("”", "\"") ;
+			htmlVerse = htmlVerse.replaceAll("ï¿½", "\"") ;
+			htmlVerse = htmlVerse.replaceAll("ï¿½", "\"") ;
 				
 			ending = htmlVerse ;
 			commentary = commentary.substring(0, index-1) ;
@@ -283,7 +284,7 @@ class Shloka {
 			buf.newLine() ;
 	}
 	
-	
+
 	List<RtfPara> RTFSerialize() throws Exception {
 		
 		List<RtfPara> paras = new ArrayList<RtfPara>() ;
@@ -307,6 +308,20 @@ class Shloka {
 		
 	}
 	
+	void TextSerialize(FileWriter fw) throws Exception {
+		
+		fw.write(title) ;
+		fw.write("\n\n") ;
+		
+		fw.write(english_verse) ;
+		fw.write("\n\n") ;
+		
+		fw.write(commentary) ;
+		fw.write("\n\n") ;
+		
+	}
+
+	
 }
 
 class XMLParser {
@@ -314,15 +329,15 @@ class XMLParser {
 	static List<Shloka> shlokas = new Vector<Shloka>() ;
 	
 	static String blogXmlFile = "c:\\users\\gkm\\downloads\\blog-10-13-2012.xml" ;
-	static String outTexFile = "c:/users/gkm/downloads/outg1.tex" ;
-	static String texTemplateFile = "c:/users/gkm/workspace/gkm-bookparser/XMLReader/src/gita-tex-template.tex" ;
+	static String outTexFile = "c:/Users/gmarballi/Downloads/bookparser/outg1.tex" ;
+	static String texTemplateFile = "c:/Users/gmarballi/Downloads/bookparser/gita-tex-template.tex" ;
 	
 	static Map<String,String> chapterNames = new HashMap<String,String>() ;
 	
 	
 	// options
-	static boolean showFootnotes = true ;
-	static boolean showSanskritWordMeanings = true ;
+	static boolean showFootnotes = false ;
+	static boolean showSanskritWordMeanings = false ;
 	
 	static String getTagValue(String sTag, Element eElement) {
 		NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
@@ -378,6 +393,19 @@ class XMLParser {
 	  }
 
 	
+	static void writeTextFile(String path) throws Exception {
+		System.out.print("Writing to file .. " + path + " , ") ;
+
+		FileWriter fw = new FileWriter(path) ;
+		
+		  for (int i = shlokas.size() - 1; i >= 0; --i) {	
+			shlokas.get(i).TextSerialize(fw) ;
+		  }
+		  
+		 fw.close() ; 
+		  System.out.println(" done.") ;
+	  }
+	  
 	static List<Shloka> doParse(String inFileName, String outFileName, String texTemplateFile) throws Exception {
 		
 			chapterNames.put("1", "Arjuna Vishaada Yoga") ;
@@ -450,7 +478,9 @@ class XMLParser {
 			
 			LatexTransform.writeLatexFile(shlokas, outFileName, texTemplateFile) ;
 			
-			writeRTFFile("c:/users/gkm/downloads/tempout.rtf") ;
+			writeRTFFile("c:/users/gmarballi/downloads/bookparser/tempout.rtf") ;
+			
+			writeTextFile("c:/users/gmarballi/downloads/bookparser/tempout.txt") ;
 			
 			return shlokas ;
 	}
@@ -485,7 +515,7 @@ class XMLParser {
 
 class LatexTransform {
 	
-	static boolean newPageForEachVerse = true ;
+	static boolean newPageForEachVerse = false ;
 	
 
 	static String html2latexTitle(Shloka s) {
@@ -598,8 +628,8 @@ class LatexTransform {
 		result = result.replaceAll("\n", "\\\\\\\\\n~\\\\\\\\") ; 
 		result = result.replaceAll("&gt;", ">") ;
 		result = result.replaceAll("&rsquo;", "'") ;
-		result = result.replaceAll("“", "\"") ;
-		result = result.replaceAll("”", "\"") ;
+		result = result.replaceAll("ï¿½", "\"") ;
+		result = result.replaceAll("ï¿½", "\"") ;
 		result = result.replaceAll("\u2019", "'") ;
 		result = result.replaceAll("%", " pct") ;
 		return result ;
@@ -683,7 +713,14 @@ class LatexTransform {
 	static void writeLatexFile(List <Shloka> shlokas, String path, String texTemplateFile) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader(texTemplateFile));
 		String line = "" ;
-		String footer = "\n" + "\\" + "printindex\n" + "\\" + "end{document}" + "\n";
+		//String footer = "\n" + "\\" + "printindex\n" + "\\" + "end{document}" + "\n";
+		String footer = "\n" 
+		+ "\\" + "newpage\n" 
+		+ "\\" + "thispagestyle{empty}\n"
+		+ "\\" + "mbox{}\n"
+		+ "\\" + "newpage\n" 
+		+ "\\" + "end{document}" + "\n";
+
 		StringBuffer header = new StringBuffer();
 		
 		System.out.println("Reading template file " + texTemplateFile) ;
