@@ -516,8 +516,9 @@ class XMLParser {
 class LatexTransform {
 	
 	static boolean newPageForEachVerse = false ;
+	static boolean sectionNumbering = false ;
+	static boolean keepBGInTitle = false ;
 	
-
 	static String html2latexTitle(Shloka s) {
 		
 		String str = s.title ;
@@ -558,8 +559,8 @@ class LatexTransform {
 				+ (newPageForEachVerse ? "newpage" : "")  
 				+ "\n" 
 				+ "\\section"
-				+ "[" + chapterNumber + "." + versenum + " " + s.firstTwoWordsShloka + "]"
-				+"{" + str + "}" ; 
+				+ (sectionNumbering ? "[" + chapterNumber + "." + versenum + " " + s.firstTwoWordsShloka + "]" : "*")
+				+"{" + (keepBGInTitle ? str : str.replace("Bhagavad Gita ", "") ) + "}" ; 
 		return result ;
 		
 	}
