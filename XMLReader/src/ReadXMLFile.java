@@ -525,6 +525,8 @@ class LatexTransform {
 		String newChapter = "" ;
 		String versenum = "" ;
 		String chapterNumber = "" ;
+		String dottedVerse = "" ;
+		
 		
 		if (str.contains("erse 1,")) {
 			Pattern p = Pattern.compile("Chapter ([0-9]+)") ;
@@ -554,13 +556,18 @@ class LatexTransform {
 			chapterNumber = m.group(1) ;
 		}
 		
+		if (s.type != Shloka.SUMMARY) {
+			dottedVerse = "(" + chapterNumber + "." + versenum + ") " ;
+		}
+	
+		
 		
 		String result = newChapter + "\\" 
 				+ (newPageForEachVerse ? "newpage" : "")  
 				+ "\n" 
 				+ "\\section"
 				+ (sectionNumbering ? "[" + chapterNumber + "." + versenum + " " + s.firstTwoWordsShloka + "]" : "*")
-				+"{" + (keepBGInTitle ? str : str.replace("Bhagavad Gita ", "") ) + "}" ; 
+				+"{" + (keepBGInTitle ? str : str.replace("Bhagavad Gita ", dottedVerse) ) + "}" ; 
 		return result ;
 		
 	}
