@@ -594,6 +594,7 @@ class LatexTransform {
 	static String html2latexEnglish(String str) {
 		String result = "\\" + "noindent" + "\\textbf{" + str + "}" ; 
 		result = result.replaceAll("\u2019", "'") ;
+		result = result.replaceAll("said:", "said: ") ;
 		return result ;
 		
 	}
