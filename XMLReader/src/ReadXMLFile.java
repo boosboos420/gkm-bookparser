@@ -408,24 +408,24 @@ class XMLParser {
 	  
 	static List<Shloka> doParse(String inFileName, String outFileName, String texTemplateFile) throws Exception {
 		
-			chapterNames.put("1", "Arjuna Vishaada Yoga") ;
-			chapterNames.put("2", "Saankhya Yoga") ;
-			chapterNames.put("3", "Karma Yoga") ;
-			chapterNames.put("4", "Jnyana Karma Sanyaasa Yoga") ;
-			chapterNames.put("5", "Karma Sanyaasa Yoga") ;
-			chapterNames.put("6", "Dhyaana Yoga") ;
-			chapterNames.put("7", "Jnyaana Vijnyaana Yoga") ;
-			chapterNames.put("8", "Akshara Brahma Yoga") ;
-			chapterNames.put("9", "Raja Vidya Raja Guhya Yoga") ;
-			chapterNames.put("10", "Vibhooti Yoga") ;
-			chapterNames.put("11", "Vishwaroopa Darshana Yoga") ;
-			chapterNames.put("12", "Bhakti Yoga") ;
-			chapterNames.put("13", "Kshetra Kshetrajnya Vibhaaga Yoga") ;
-			chapterNames.put("14", "Gunatraya Vibhaaga Yoga") ;
-			chapterNames.put("15", "Purushottam Yoga") ;
-			chapterNames.put("16", "Daivaasursampad Vibhaaga Yoga") ;
-			chapterNames.put("17", "Shraddhatraya Vibhaaga Yoga") ;
-			chapterNames.put("18", "Moksha Sanyaasa Yoga") ;
+			chapterNames.put("1", "Arjuna's Sorrow - Vishaada Yoga") ;
+			chapterNames.put("2", "Discrimination - Saankhya Yoga") ;
+			chapterNames.put("3", "Action - Karma Yoga") ;
+			chapterNames.put("4", "Knowledge - Jnyana Karma Sanyaasa Yoga") ;
+			chapterNames.put("5", "Renunciation - Karma Sanyaasa Yoga") ;
+			chapterNames.put("6", "Meditation - Dhyaana Yoga") ;
+			chapterNames.put("7", "Knowledge And Wisdom - Jnyaana Vijnyaana Yoga") ;
+			chapterNames.put("8", "Creation And Dissolution - Akshara Brahma Yoga") ;
+			chapterNames.put("9", "Worship - Raja Vidya Raja Guhya Yoga") ;
+			chapterNames.put("10", "Ishvara's Glories - Vibhooti Yoga") ;
+			chapterNames.put("11", "The Universal Form - Vishwaroopa Darshana Yoga") ;
+			chapterNames.put("12", "Devotion - Bhakti Yoga") ;
+			chapterNames.put("13", "Body And Soul - Kshetra Kshetrajnya Vibhaaga Yoga") ;
+			chapterNames.put("14", "The Three Modes - Gunatraya Vibhaaga Yoga") ;
+			chapterNames.put("15", "The Supreme Person - Purushottam Yoga") ;
+			chapterNames.put("16", "Qualities - Daivaasursampad Vibhaaga Yoga") ;
+			chapterNames.put("17", "Faith - Shraddhatraya Vibhaaga Yoga") ;
+			chapterNames.put("18", "Liberation - Moksha Sanyaasa Yoga") ;
 			
 			
 		 	File fXmlFile = new File(inFileName);
