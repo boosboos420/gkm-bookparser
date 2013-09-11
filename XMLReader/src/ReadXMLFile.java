@@ -186,8 +186,8 @@ class Shloka {
 		htmlVerse = htmlVerse.replaceAll("</b>", "") ;
 		htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", "") ;
 		htmlVerse = htmlVerse.replaceAll("[&]nbsp;", "") ;
-		htmlVerse = htmlVerse.replaceAll("ï¿½", "\"") ;
-		htmlVerse = htmlVerse.replaceAll("ï¿½", "\"") ;
+		htmlVerse = htmlVerse.replaceAll("“", "\"") ;
+		htmlVerse = htmlVerse.replaceAll("”", "\"") ;
 		
 		//System.out.println(htmlVerse) ;
 		
@@ -254,8 +254,8 @@ class Shloka {
 			htmlVerse = htmlVerse.replaceAll("<i>", "") ;
 			htmlVerse = htmlVerse.replaceAll("</i>", "") ;
 			htmlVerse = htmlVerse.replaceAll("<br[ ]*/>", " ") ;
-			htmlVerse = htmlVerse.replaceAll("ï¿½", "\"") ;
-			htmlVerse = htmlVerse.replaceAll("ï¿½", "\"") ;
+			htmlVerse = htmlVerse.replaceAll("“", "\"") ;
+			htmlVerse = htmlVerse.replaceAll("”", "\"") ;
 				
 			ending = htmlVerse ;
 			commentary = commentary.substring(0, index-1) ;
